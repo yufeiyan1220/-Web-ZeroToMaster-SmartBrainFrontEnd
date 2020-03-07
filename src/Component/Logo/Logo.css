@@ -1,0 +1,7 @@
+.Tilt {
+  background: linear-gradient(#F76262 50%, rgba(255,255,255,0) 0) 0 0,
+  radial-gradient(circle closest-side, #F76262 53%, rgba(255,255,255,0) 0) 0 0,
+  radial-gradient(circle closest-side, #F76262 50%, rgba(255,255,255,0) 0) 55px 0 #48B;
+  background-size: 6px 100px;
+  background-repeat: repeat-x;
+}
