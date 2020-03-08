@@ -7,7 +7,8 @@ import ImageLinkForm from './Component/ImageLinkForm/ImageLinkForm.js';
 import Rank from './Component/Rank/Rank.js'
 import './App.css';
 import FaceRecognition from './Component/FaceRecognition/FaceRecognition.js'
-
+import Signin from './Component/Signin/Signin.js'
+import Register from './Component/Register/Register.js'
 
 import Particles from 'react-particles-js';
 import 'tachyons'
@@ -135,7 +136,8 @@ class App extends Component {
     this.state = {
       input : '',
       imageUrl: '',
-      box:[]
+      box:[],
+      route:'signin'
     }
   }
 
@@ -147,6 +149,10 @@ class App extends Component {
   onButtonSubmit = () => {
     // console.log("click");
     this.setState({imageUrl: this.state.input});
+  }
+
+  onRouteChange = (route) => {
+    this.setState({route: route});
   }
 
   calculateFaceLocation(response) {
@@ -170,16 +176,41 @@ class App extends Component {
   }
 
   render() {
-    return (
-      <div className="App">
-        <Particles className='particals' params = {particalOptions}/>
-        <Navigation />
+
+    let content_display;
+    if(this.state.route === 'signin') {
+      content_display =
+      <div>
+        <Navigation onRouteChange = {this.onRouteChange} isSignin = {false}/>
+        <Signin onRouteChange = {this.onRouteChange} />
+      </div>;
+    }
+    else if(this.state.route === 'home'){
+      content_display =
+      <div>
+        <Navigation onRouteChange = {this.onRouteChange} isSignin = {true}/>
         <Logo />
         <Rank />
         <ImageLinkForm
            onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}
         />
          <FaceRecognition faceBox = {this.state.box} imageUrl = {this.state.imageUrl}/>
+      </div>;
+    }
+    else if(this.state.route === 'register') {
+      content_display =
+      <div>
+        <Navigation onRouteChange = {this.onRouteChange} isSignin = {false}/>
+        <Register onRouteChange = {this.onRouteChange} />
+      </div>;
+
+    }
+
+    return (
+      <div className="App">
+        <Particles className='particals' params = {particalOptions}/>
+
+        {content_display}
       </div>
     );
   }
