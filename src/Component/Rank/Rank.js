@@ -1,13 +1,13 @@
 import React from 'react';
 import './Rank.css'
-function Rank() {
+function Rank({userState}) {
   return (
     <div className="white f3 Choco">
       <div>
-        {"FY, your current rank is ..."}
+        {`${userState.name}, your current rank is...`}
       </div>
       <div className = "f1 rank">
-        {"#5"}
+        {`#${userState.entries}`}
       </div>
     </div>
   );

@@ -1,11 +1,14 @@
 import React from 'react';
 import './Navigation.css'
-function Navigation({onRouteChange, isSignin}) {
+function Navigation({onRouteChange, userState, onUserStateChange}) {
   let nav_bar;
-  if(isSignin) {
+  if(userState) {
     nav_bar =
     <nav>
-      <p onClick={()=>onRouteChange('signin')} className='f3 link dim white underline pa3 pointer'>Sign Out</p>
+      <p onClick={()=>{
+        onUserStateChange(null);
+        onRouteChange('signin');
+      }} className='f3 link dim white underline pa3 pointer'>Sign Out</p>
     </nav>;
   } else {
     nav_bar =

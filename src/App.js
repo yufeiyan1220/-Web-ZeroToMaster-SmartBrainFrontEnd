@@ -137,6 +137,7 @@ class App extends Component {
       input : '',
       imageUrl: '',
       box:[],
+      userLoaded: null,
       route:'signin'
     }
   }
@@ -153,6 +154,10 @@ class App extends Component {
 
   onRouteChange = (route) => {
     this.setState({route: route});
+  }
+
+  onUserStateChange = (userLoaded) => {
+    this.setState({userLoaded: userLoaded});
   }
 
   calculateFaceLocation(response) {
@@ -176,34 +181,33 @@ class App extends Component {
   }
 
   render() {
-
+    console.log("renderTimes");
     let content_display;
     if(this.state.route === 'signin') {
       content_display =
       <div>
-        <Navigation onRouteChange = {this.onRouteChange} isSignin = {false}/>
-        <Signin onRouteChange = {this.onRouteChange} />
+        <Navigation onRouteChange = {this.onRouteChange} userState = {this.state.userLoaded} onUserStateChange = {this.onUserStateChange} />
+        <Signin onRouteChange = {this.onRouteChange} onUserStateChange = {this.onUserStateChange} />
       </div>;
     }
     else if(this.state.route === 'home'){
       content_display =
       <div>
-        <Navigation onRouteChange = {this.onRouteChange} isSignin = {true}/>
+        <Navigation onRouteChange = {this.onRouteChange} userState = {this.state.userLoaded} onUserStateChange = {this.onUserStateChange}/>
         <Logo />
-        <Rank />
+        <Rank userState = {this.state.userLoaded} />
         <ImageLinkForm
            onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}
         />
-         <FaceRecognition faceBox = {this.state.box} imageUrl = {this.state.imageUrl}/>
+         <FaceRecognition faceBox = {this.state.box} imageUrl = {this.state.imageUrl} />
       </div>;
     }
     else if(this.state.route === 'register') {
       content_display =
       <div>
-        <Navigation onRouteChange = {this.onRouteChange} isSignin = {false}/>
-        <Register onRouteChange = {this.onRouteChange} />
+        <Navigation onRouteChange = {this.onRouteChange} userState = {this.state.userLoaded} onUserStateChange = {this.onUserStateChange}/>
+        <Register onRouteChange = {this.onRouteChange} onUserStateChange = {this.onUserStateChange} />
       </div>;
-
     }
 
     return (
@@ -224,7 +228,23 @@ class App extends Component {
         })
         .then((response)=>{
           let res = this.calculateFaceLocation(response);
-          console.log(res);
+
+          let sentItem = {
+            method: 'PUT', // or 'PUT'
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({id:this.state.userLoaded.id})
+          };
+
+          fetch('http://localhost:3001/image', sentItem)
+            .then(response=>response.json())
+            .then(entries=>{
+              let user_increase = Object.assign({}, this.state.userLoaded);
+              user_increase.entries = entries;
+              this.setState({userLoaded : user_increase});
+            });
+          // console.log(res);
           return res;
         })
         .catch(err=>console.log(err));
